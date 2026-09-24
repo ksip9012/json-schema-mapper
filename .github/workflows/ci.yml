@@ -10,4 +10,4 @@ jobs:
           python-version: '3.12'
       - run: pip install ruff pytest
       - run: ruff check .
-      - run: pytest || ([ $? -eq 5 ] && echo "No tests collected yet, skipping." || exit 1)
+      - run: pytest
