@@ -1,6 +1,11 @@
 import pytest
 
-from json_schema_mapper.rules import categorize, extract_date, is_hidden
+from json_schema_mapper.rules import (
+    categorize,
+    count_words,
+    extract_date,
+    is_hidden,
+)
 
 
 @pytest.mark.parametrize(
@@ -64,3 +69,24 @@ def test_categorize(filename, expected):
 )
 def test_is_hidden(filename, expected):
     assert is_hidden(filename) == expected
+
+
+@pytest.mark.parametrize(
+    ("filename", "expected"),
+    [
+        ("20260115_meeting-notes.md", 3),
+        ("invoice_2026-03.pdf", 3),
+        ("IMG_20260210_143022.jpg", 3),
+        ("report_final_v2.docx", 3),
+        ("budget planning.xlsx", 2),
+        ("notes.txt", 1),
+        (".hidden_config", 2),
+        ("archive.tar.gz", 1),
+        ("2026-04-01-daily-log.md", 5),
+        ("photo (1).png", 2),
+        ("draft_v1.md", 2),
+        ("draft_v10.md", 2),
+    ],
+)
+def test_count_words(filename, expected):
+    assert count_words(filename) == expected

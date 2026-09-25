@@ -13,6 +13,8 @@ _DOCUMENT_EXTENSIONS = {".md", ".txt", ".pdf", ".docx", ".xlsx"}
 _IMAGE_EXTENSIONS = {".jpg", ".png"}
 _ARCHIVE_EXTENSIONS = {".gz"}
 
+_WORD_SEPARATOR_PATTERN = r"[_\-\s]+"
+
 
 def extract_date(filename: str) -> str | None:
     """ファイル名に埋め込まれた日付を抽出する。
@@ -76,3 +78,16 @@ def is_hidden(filename: str) -> bool:
         `.` で始まる場合は True。
     """
     return filename.startswith(".")
+
+
+def count_words(filename: str) -> int:
+    """ファイル名をアンダースコア・ハイフン・スペースで分割した単語数を数える。
+
+    Args:
+        filename: 判定対象のファイル名。
+
+    Returns:
+        区切り文字で分割した単語数。
+    """
+    words = [w for w in re.split(_WORD_SEPARATOR_PATTERN, filename) if w]
+    return len(words)
