@@ -1,6 +1,6 @@
 import pytest
 
-from json_schema_mapper.rules import categorize, extract_date
+from json_schema_mapper.rules import categorize, extract_date, is_hidden
 
 
 @pytest.mark.parametrize(
@@ -43,3 +43,24 @@ def test_extract_date(filename, expected):
 )
 def test_categorize(filename, expected):
     assert categorize(filename) == expected
+
+
+@pytest.mark.parametrize(
+    ("filename", "expected"),
+    [
+        ("20260115_meeting-notes.md", False),
+        ("invoice_2026-03.pdf", False),
+        ("IMG_20260210_143022.jpg", False),
+        ("report_final_v2.docx", False),
+        ("budget planning.xlsx", False),
+        ("notes.txt", False),
+        (".hidden_config", True),
+        ("archive.tar.gz", False),
+        ("2026-04-01-daily-log.md", False),
+        ("photo (1).png", False),
+        ("draft_v1.md", False),
+        ("draft_v10.md", False),
+    ],
+)
+def test_is_hidden(filename, expected):
+    assert is_hidden(filename) == expected
