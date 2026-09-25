@@ -14,6 +14,7 @@ _IMAGE_EXTENSIONS = {".jpg", ".png"}
 _ARCHIVE_EXTENSIONS = {".gz"}
 
 _WORD_SEPARATOR_PATTERN = r"[_\-\s]+"
+_VERSION_SUFFIX_PATTERN = r"_v\d+\b"
 
 
 def extract_date(filename: str) -> str | None:
@@ -91,3 +92,17 @@ def count_words(filename: str) -> int:
     """
     words = [w for w in re.split(_WORD_SEPARATOR_PATTERN, filename) if w]
     return len(words)
+
+
+def has_version_suffix(filename: str) -> bool:
+    """ファイル名に `_v1` `_v10` のようなバージョン表記が含まれるかを判定する。
+
+    小文字の `v` に続く数字（例: `_v1`, `_v10`）のみを検出する。
+
+    Args:
+        filename: 判定対象のファイル名。
+
+    Returns:
+        バージョン表記が含まれる場合は True。
+    """
+    return re.search(_VERSION_SUFFIX_PATTERN, filename) is not None
