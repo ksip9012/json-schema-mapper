@@ -7,7 +7,7 @@ from typing import Any
 
 from jsonschema import validate
 
-from json_schema_mapper.file_lister import get_file_info
+from json_schema_mapper.file_lister import get_file_info, list_files
 from json_schema_mapper.rules import (
     categorize,
     count_words,
@@ -57,3 +57,17 @@ def map_file(path: str | Path) -> dict[str, Any]:
 
     validate(instance=result, schema=_SCHEMA)
     return result
+
+
+def map_folder(folder: str | Path) -> list[dict[str, Any]]:
+    """フォルダ直下にあるファイルを、それぞれ schema.json に準拠した
+    辞書に構造化したリストを取得する。
+
+    Args:
+        folder: 対象フォルダのパス。
+
+    Returns:
+        `map_file` の戻り値をファイル名の昇順に並べたリスト。
+    """
+    folder_path = Path(folder)
+    return [map_file(folder_path / name) for name in list_files(folder_path)]

@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from json_schema_mapper.mapper import map_file
+from json_schema_mapper.mapper import map_file, map_folder
 
 FIXTURES_DIR = (
     Path(__file__).resolve().parent.parent / "fixtures" / "sample_folder"
@@ -51,3 +51,26 @@ def test_map_file_fields_for_multi_extension_file():
     assert result["extension"] == ".gz"
     assert result["is_multi_extension"] is True
     assert result["category"] == "archive"
+
+
+def test_map_folder_returns_all_files_sorted_by_name():
+    results = map_folder(FIXTURES_DIR)
+
+    assert [r["file_name"] for r in results] == sorted(
+        r["file_name"] for r in results
+    )
+    assert len(results) == 12
+    assert {r["file_name"] for r in results} == {
+        "20260115_meeting-notes.md",
+        "invoice_2026-03.pdf",
+        "IMG_20260210_143022.jpg",
+        "report_final_v2.docx",
+        "budget planning.xlsx",
+        "notes.txt",
+        ".hidden_config",
+        "archive.tar.gz",
+        "2026-04-01-daily-log.md",
+        "photo (1).png",
+        "draft_v1.md",
+        "draft_v10.md",
+    }
