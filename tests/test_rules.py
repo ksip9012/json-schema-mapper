@@ -4,6 +4,7 @@ from json_schema_mapper.rules import (
     categorize,
     count_words,
     extract_date,
+    has_version_suffix,
     is_hidden,
 )
 
@@ -90,3 +91,24 @@ def test_is_hidden(filename, expected):
 )
 def test_count_words(filename, expected):
     assert count_words(filename) == expected
+
+
+@pytest.mark.parametrize(
+    ("filename", "expected"),
+    [
+        ("20260115_meeting-notes.md", False),
+        ("invoice_2026-03.pdf", False),
+        ("IMG_20260210_143022.jpg", False),
+        ("report_final_v2.docx", True),
+        ("budget planning.xlsx", False),
+        ("notes.txt", False),
+        (".hidden_config", False),
+        ("archive.tar.gz", False),
+        ("2026-04-01-daily-log.md", False),
+        ("photo (1).png", False),
+        ("draft_v1.md", True),
+        ("draft_v10.md", True),
+    ],
+)
+def test_has_version_suffix(filename, expected):
+    assert has_version_suffix(filename) == expected
