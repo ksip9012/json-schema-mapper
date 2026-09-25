@@ -4,6 +4,7 @@ from json_schema_mapper.rules import (
     categorize,
     count_words,
     extract_date,
+    extract_duplicate_index,
     has_version_suffix,
     is_hidden,
 )
@@ -112,3 +113,24 @@ def test_count_words(filename, expected):
 )
 def test_has_version_suffix(filename, expected):
     assert has_version_suffix(filename) == expected
+
+
+@pytest.mark.parametrize(
+    ("filename", "expected"),
+    [
+        ("20260115_meeting-notes.md", None),
+        ("invoice_2026-03.pdf", None),
+        ("IMG_20260210_143022.jpg", None),
+        ("report_final_v2.docx", None),
+        ("budget planning.xlsx", None),
+        ("notes.txt", None),
+        (".hidden_config", None),
+        ("archive.tar.gz", None),
+        ("2026-04-01-daily-log.md", None),
+        ("photo (1).png", 1),
+        ("draft_v1.md", None),
+        ("draft_v10.md", None),
+    ],
+)
+def test_extract_duplicate_index(filename, expected):
+    assert extract_duplicate_index(filename) == expected
