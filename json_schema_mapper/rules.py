@@ -58,3 +58,15 @@ def categorize(filename: str) -> str:
     if extension in _ARCHIVE_EXTENSIONS:
         return "archive"
     return "other"
+
+
+def is_hidden(filename: str) -> bool:
+    """ファイル名が `.` で始まる隠しファイルかどうかを判定する。
+
+    Args:
+        filename: 判定対象のファイル名。
+
+    Returns:
+        `.` で始まる場合は True。
+    """
+    return filename.startswith(".")
