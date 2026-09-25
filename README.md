@@ -4,29 +4,29 @@ LLM を使わず、ルールベースでユーザー入力を JSON テンプレ�
 
 ## デモ
 
-`fixtures/sample_folder/draft_v1.md` を `map_file()` に渡すと、以下のように構造化される。
+ターミナルからフォルダを指定して実行すると、フォルダ内のファイルを構造化した JSON 配列が標準出力に出力される。
 
-```pycon
->>> from json_schema_mapper.mapper import map_file
->>> map_file("fixtures/sample_folder/draft_v1.md")
-{
+```console
+$ python -m json_schema_mapper fixtures/sample_folder
+[
+  {
     "file_name": "draft_v1.md",
     "extension": ".md",
-    "is_multi_extension": False,
+    "is_multi_extension": false,
     "size_bytes": 0,
     "modified_at": "2026-09-25T21:30:00.123456",
-    "extracted_date": None,
+    "extracted_date": null,
     "category": "document",
-    "is_hidden": False,
+    "is_hidden": false,
     "word_count": 2,
-    "has_version_suffix": True,
-    "duplicate_index": None,
+    "has_version_suffix": true,
+    "duplicate_index": null,
     "separator_style": "underscore",
-    "normalized_title": "draft",
-}
+    "normalized_title": "draft"
+  },
+  ...
+]
 ```
-
-フォルダ全体の一覧化・CLI などはまだ未実装（下記「今後の展望」参照）。
 
 ## 背景・課題
 
@@ -40,7 +40,8 @@ LLM を使わず、ルールベースでユーザー入力を JSON テンプレ�
 
 ## 主な機能
 
-- フォルダ内の1ファイルを受け取り、[`schema.json`](./schema.json) に定義した13項目の構造化データに変換する（`map_file()`）
+- フォルダを指定して実行し（`python -m json_schema_mapper <folder>`）、フォルダ内の全ファイルを構造化した JSON 配列を標準出力に出力する
+- 1ファイルを受け取り、[`schema.json`](./schema.json) に定義した13項目の構造化データに変換する（`map_file()`）
 - ファイル名から日付・カテゴリ・バージョン表記・連番・区切り文字の種類・実質的なタイトルなどをルールベースで抽出する（LLM は使用しない）
 - 組み立てた結果を `schema.json` に対して検証する
 - 入力データソース（フォルダのファイルリスト）や各項目の抽出ルールの選定理由は [`decisions/`](./decisions) に ADR として記録している
@@ -57,7 +58,8 @@ LLM を使わず、ルールベースでユーザー入力を JSON テンプレ�
 
 - [`json_schema_mapper/file_lister.py`](./json_schema_mapper/file_lister.py): フォルダ内のファイル一覧・ファイル情報（`FileInfo`）の取得
 - [`json_schema_mapper/rules.py`](./json_schema_mapper/rules.py): ファイル名からのルールベースの各項目抽出
-- [`json_schema_mapper/mapper.py`](./json_schema_mapper/mapper.py): 上記を組み合わせて `schema.json` に準拠した辞書を組み立て・検証する（`map_file()`）
+- [`json_schema_mapper/mapper.py`](./json_schema_mapper/mapper.py): 上記を組み合わせて `schema.json` に準拠した辞書を組み立て・検証する（`map_file()` / `map_folder()`）
+- [`json_schema_mapper/__main__.py`](./json_schema_mapper/__main__.py): `python -m json_schema_mapper <folder>` の CLI エントリポイント
 
 ## 技術選定理由
 
@@ -79,10 +81,19 @@ pip install ruff pytest jsonschema
 
 ## 使い方
 
+ターミナルから：
+
+```bash
+python -m json_schema_mapper <folder>
+```
+
+Python から：
+
 ```python
-from json_schema_mapper.mapper import map_file
+from json_schema_mapper.mapper import map_file, map_folder
 
 result = map_file("fixtures/sample_folder/draft_v1.md")
+results = map_folder("fixtures/sample_folder")
 ```
 
 ## テストの実行方法
@@ -95,6 +106,5 @@ pytest
 
 ## 今後の展望・既知の制約
 
-- 本プロジェクトは学習ロードマップのステップ1であり、ルールベースゆえに対応できる入力パターンには限界がある
-- フォルダ全体をまとめて処理する関数（一覧の一括構造化）や、実際にフォルダを指定して実行する CLI は未実装
+- 本プロジェクトは学習ロードマップのステップ1であり、ルールベースゆえに対応できる入力パターンには限界がある（例: ファイル名の時刻表記・年月のみの日付は現状取り除かれない。ADR 0009 参照）
 - 次のステップとして、LLM の Structured Output を使った構造化への発展を予定している
