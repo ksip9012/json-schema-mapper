@@ -2,11 +2,16 @@
 
 import re
 from datetime import datetime
+from pathlib import Path
 
 _DATE_PATTERNS = [
     r"(?<!\d)(\d{4})(\d{2})(\d{2})(?!\d)",
     r"(?<!\d)(\d{4})-(\d{2})-(\d{2})(?!\d)",
 ]
+
+_DOCUMENT_EXTENSIONS = {".md", ".txt", ".pdf", ".docx", ".xlsx"}
+_IMAGE_EXTENSIONS = {".jpg", ".png"}
+_ARCHIVE_EXTENSIONS = {".gz"}
 
 
 def extract_date(filename: str) -> str | None:
@@ -31,3 +36,25 @@ def extract_date(filename: str) -> str | None:
                 continue
             return date.strftime("%Y-%m-%d")
     return None
+
+
+def categorize(filename: str) -> str:
+    """拡張子からファイルの種別を分類する。
+
+    複数の拡張子を持つファイル（例: `archive.tar.gz`）は、`Path.suffix` で
+    取れる最後の拡張子（`.gz`）で判定する。
+
+    Args:
+        filename: 判定対象のファイル名。
+
+    Returns:
+        `"document"` / `"image"` / `"archive"` / `"other"` のいずれか。
+    """
+    extension = Path(filename).suffix.lower()
+    if extension in _DOCUMENT_EXTENSIONS:
+        return "document"
+    if extension in _IMAGE_EXTENSIONS:
+        return "image"
+    if extension in _ARCHIVE_EXTENSIONS:
+        return "archive"
+    return "other"
