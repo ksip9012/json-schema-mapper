@@ -8,6 +8,7 @@ from json_schema_mapper.rules import (
     extract_duplicate_index,
     has_version_suffix,
     is_hidden,
+    normalize_title,
 )
 
 
@@ -156,3 +157,24 @@ def test_extract_duplicate_index(filename, expected):
 )
 def test_determine_separator_style(filename, expected):
     assert determine_separator_style(filename) == expected
+
+
+@pytest.mark.parametrize(
+    ("filename", "expected"),
+    [
+        ("20260115_meeting-notes.md", "meeting-notes"),
+        ("invoice_2026-03.pdf", "invoice_2026-03"),
+        ("IMG_20260210_143022.jpg", "IMG_143022"),
+        ("report_final_v2.docx", "report_final"),
+        ("budget planning.xlsx", "budget planning"),
+        ("notes.txt", "notes"),
+        (".hidden_config", ".hidden_config"),
+        ("archive.tar.gz", "archive"),
+        ("2026-04-01-daily-log.md", "daily-log"),
+        ("photo (1).png", "photo"),
+        ("draft_v1.md", "draft"),
+        ("draft_v10.md", "draft"),
+    ],
+)
+def test_normalize_title(filename, expected):
+    assert normalize_title(filename) == expected

@@ -16,6 +16,23 @@ _ARCHIVE_EXTENSIONS = {".gz"}
 _WORD_SEPARATOR_PATTERN = r"[_\-\s]+"
 _VERSION_SUFFIX_PATTERN = r"_v\d+\b"
 _DUPLICATE_INDEX_PATTERN = r"\((\d+)\)"
+_SEPARATOR_RUN_PATTERN = r"([_\-\s])[_\-\s]*"
+
+
+def _find_date_match(filename: str) -> re.Match[str] | None:
+    """ファイル名から実在する日付にマッチする箇所を探す。
+
+    `extract_date` と `normalize_title` の両方から利用する内部ヘルパー。
+    """
+    for pattern in _DATE_PATTERNS:
+        for match in re.finditer(pattern, filename):
+            year, month, day = match.groups()
+            try:
+                datetime(int(year), int(month), int(day))
+            except ValueError:
+                continue
+            return match
+    return None
 
 
 def extract_date(filename: str) -> str | None:
@@ -31,15 +48,11 @@ def extract_date(filename: str) -> str | None:
     Returns:
         検出した日付（`YYYY-MM-DD` 形式の文字列）。見つからない場合は None。
     """
-    for pattern in _DATE_PATTERNS:
-        for match in re.finditer(pattern, filename):
-            year, month, day = match.groups()
-            try:
-                date = datetime(int(year), int(month), int(day))
-            except ValueError:
-                continue
-            return date.strftime("%Y-%m-%d")
-    return None
+    match = _find_date_match(filename)
+    if match is None:
+        return None
+    year, month, day = match.groups()
+    return datetime(int(year), int(month), int(day)).strftime("%Y-%m-%d")
 
 
 def categorize(filename: str) -> str:
@@ -153,3 +166,40 @@ def determine_separator_style(filename: str) -> str:
     if has_hyphen:
         return "hyphen"
     return "space"
+
+
+def normalize_title(filename: str) -> str:
+    """拡張子・日付・バージョン表記・連番を取り除いた実質的なタイトルを
+    抜き出す。
+
+    `extract_date` / `has_version_suffix` / `extract_duplicate_index` が
+    実際に検出した箇所のみを取り除く。時刻（`HHMMSS`）や年月のみの日付
+    など、対応する検出ロジックが存在しないものは取り除かない
+    （例: `IMG_20260210_143022.jpg` → `IMG_143022`）。大文字小文字・
+    残りの区切り文字の種類は変更しない。
+
+    Args:
+        filename: 判定対象のファイル名。
+
+    Returns:
+        実質的なタイトル部分。
+    """
+    title = filename
+    while Path(title).suffix:
+        title = Path(title).stem
+
+    date_match = _find_date_match(title)
+    if date_match is not None:
+        title = title[: date_match.start()] + title[date_match.end() :]
+
+    version_match = re.search(_VERSION_SUFFIX_PATTERN, title)
+    if version_match is not None:
+        title = title[: version_match.start()] + title[version_match.end() :]
+
+    duplicate_match = re.search(_DUPLICATE_INDEX_PATTERN, title)
+    if duplicate_match is not None:
+        start, end = duplicate_match.start(), duplicate_match.end()
+        title = title[:start] + title[end:]
+
+    title = re.sub(_SEPARATOR_RUN_PATTERN, r"\1", title)
+    return title.strip("_- ")
