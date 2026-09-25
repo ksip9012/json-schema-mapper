@@ -9,14 +9,9 @@ _DATE_PATTERNS = [
     r"(?<!\d)(\d{4})-(\d{2})-(\d{2})(?!\d)",
 ]
 
-_DOCUMENT_EXTENSIONS = {
-    ".md", ".txt", ".pdf", ".doc", ".docx", ".xls", ".xlsx",
-    ".ppt", ".pptx", ".csv",
-}
-_IMAGE_EXTENSIONS = {
-    ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg", ".webp",
-}
-_ARCHIVE_EXTENSIONS = {".zip", ".tar", ".gz", ".rar", ".7z", ".bz2"}
+_DOCUMENT_EXTENSIONS = {".md", ".txt", ".pdf", ".docx", ".xlsx"}
+_IMAGE_EXTENSIONS = {".jpg", ".png"}
+_ARCHIVE_EXTENSIONS = {".gz"}
 
 
 def extract_date(filename: str) -> str | None:
