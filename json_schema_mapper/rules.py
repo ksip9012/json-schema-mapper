@@ -44,6 +44,12 @@ def categorize(filename: str) -> str:
     複数の拡張子を持つファイル（例: `archive.tar.gz`）は、`Path.suffix` で
     取れる最後の拡張子（`.gz`）で判定する。
 
+    Unix の慣習に従い、先頭のドット1つは隠しファイルの印であり拡張子の
+    区切りとはみなさない（`Path.suffix` の挙動）。例えば `.hidden_config`
+    はドットが1つしかないため拡張子なし（`category="other"`）になる。一方
+    `.config.json` のように2つ目のドットがあれば、それ以降（`.json`）は
+    通常どおり拡張子として扱われる。
+
     Args:
         filename: 判定対象のファイル名。
 
