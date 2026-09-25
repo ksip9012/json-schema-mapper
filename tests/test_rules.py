@@ -3,6 +3,7 @@ import pytest
 from json_schema_mapper.rules import (
     categorize,
     count_words,
+    determine_separator_style,
     extract_date,
     extract_duplicate_index,
     has_version_suffix,
@@ -134,3 +135,24 @@ def test_has_version_suffix(filename, expected):
 )
 def test_extract_duplicate_index(filename, expected):
     assert extract_duplicate_index(filename) == expected
+
+
+@pytest.mark.parametrize(
+    ("filename", "expected"),
+    [
+        ("20260115_meeting-notes.md", "mixed"),
+        ("invoice_2026-03.pdf", "mixed"),
+        ("IMG_20260210_143022.jpg", "underscore"),
+        ("report_final_v2.docx", "underscore"),
+        ("budget planning.xlsx", "space"),
+        ("notes.txt", "none"),
+        (".hidden_config", "underscore"),
+        ("archive.tar.gz", "none"),
+        ("2026-04-01-daily-log.md", "hyphen"),
+        ("photo (1).png", "space"),
+        ("draft_v1.md", "underscore"),
+        ("draft_v10.md", "underscore"),
+    ],
+)
+def test_determine_separator_style(filename, expected):
+    assert determine_separator_style(filename) == expected

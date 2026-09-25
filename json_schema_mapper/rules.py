@@ -126,3 +126,30 @@ def extract_duplicate_index(filename: str) -> int | None:
     if match is None:
         return None
     return int(match.group(1))
+
+
+def determine_separator_style(filename: str) -> str:
+    """ファイル名で使われている区切り文字の種類を判定する。
+
+    Args:
+        filename: 判定対象のファイル名。
+
+    Returns:
+        `"underscore"` / `"hyphen"` / `"space"` / `"mixed"` /
+        `"none"` のいずれか。複数種類の区切り文字が混在する場合は
+        `"mixed"`、いずれも含まない場合は `"none"`。
+    """
+    has_underscore = "_" in filename
+    has_hyphen = "-" in filename
+    has_space = " " in filename
+    kinds_used = sum([has_underscore, has_hyphen, has_space])
+
+    if kinds_used == 0:
+        return "none"
+    if kinds_used > 1:
+        return "mixed"
+    if has_underscore:
+        return "underscore"
+    if has_hyphen:
+        return "hyphen"
+    return "space"
