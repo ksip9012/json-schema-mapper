@@ -15,6 +15,7 @@ _ARCHIVE_EXTENSIONS = {".gz"}
 
 _WORD_SEPARATOR_PATTERN = r"[_\-\s]+"
 _VERSION_SUFFIX_PATTERN = r"_v\d+\b"
+_DUPLICATE_INDEX_PATTERN = r"\((\d+)\)"
 
 
 def extract_date(filename: str) -> str | None:
@@ -106,3 +107,22 @@ def has_version_suffix(filename: str) -> bool:
         バージョン表記が含まれる場合は True。
     """
     return re.search(_VERSION_SUFFIX_PATTERN, filename) is not None
+
+
+def extract_duplicate_index(filename: str) -> int | None:
+    """ファイル名に含まれる `(数字)` 形式の連番を抽出する。
+
+    OS がファイルを複製・保存する際に自動的に付与する連番
+    （例: `photo (1).png`）を検出する。`_v1` のような意図的な
+    バージョン表記（`has_version_suffix`）とは異なる概念として扱う。
+
+    Args:
+        filename: 判定対象のファイル名。
+
+    Returns:
+        検出した連番。見つからない場合は None。
+    """
+    match = re.search(_DUPLICATE_INDEX_PATTERN, filename)
+    if match is None:
+        return None
+    return int(match.group(1))
