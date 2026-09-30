@@ -32,9 +32,9 @@ $ python -m json_schema_mapper fixtures/sample_folder
 
 「自由入力をどう構造化データに落とし込むか」を学ぶことを目的としたプロジェクト。以下の3段階のステップを想定しており、本プロジェクトはその入り口（ステップ1）にあたる。
 
-1. **本プロジェクト**: LLM を使わず、ルールベースで入力を JSON に構造化する
-2. LLM の Structured Output を使って構造化する
-3. 自由入力を LLM を使って構造化する
+1. **本プロジェクト（Step1-A1）**: LLM を使わず、ルールベースで入力を JSON に構造化する
+2. Step1-A2: [llm-structured-output-extractor](https://github.com/ksip9012/llm-structured-output-extractor) — 固定スキーマを LLM の Structured Output 機能で埋める
+3. Step1-B: [llm-json-extractor](https://github.com/ksip9012/llm-json-extractor) — スキーマ自体も LLM に設計させ、自由入力を JSON 化する
 
 まずルールベースでの実装を通して、構造化のための入力の扱い方・マッピングの設計を理解する。
 
