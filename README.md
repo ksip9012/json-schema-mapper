@@ -36,6 +36,8 @@ $ python -m json_schema_mapper fixtures/sample_folder
 2. Step1-A2: [llm-structured-output-extractor](https://github.com/ksip9012/llm-structured-output-extractor) — 固定スキーマを LLM の Structured Output 機能で埋める
 3. Step1-B: [llm-json-extractor](https://github.com/ksip9012/llm-json-extractor) — スキーマ自体も LLM に設計させ、自由入力を JSON 化する
 
+3つの方法の精度・コスト・処理時間の横断比較は [notes/step1-comparison.md](./notes/step1-comparison.md) にまとめた。
+
 まずルールベースでの実装を通して、構造化のための入力の扱い方・マッピングの設計を理解する。
 
 ## 主な機能
@@ -107,4 +109,4 @@ pytest
 ## 今後の展望・既知の制約
 
 - 本プロジェクトは学習ロードマップのステップ1であり、ルールベースゆえに対応できる入力パターンには限界がある（例: ファイル名の時刻表記・年月のみの日付は現状取り除かれない。ADR 0009 参照）
-- 次のステップとして、LLM の Structured Output を使った構造化への発展を予定している
+- LLM を使う Step1-A2・B との精度・コスト・処理時間の比較は [notes/step1-comparison.md](./notes/step1-comparison.md) を参照。このプロジェクトは 1件 2ms 弱・無料で毎回同じ答えになる一方、ルールに書いた範囲しか扱えない
