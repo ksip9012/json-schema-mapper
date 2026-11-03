@@ -72,13 +72,17 @@ $ python -m json_schema_mapper fixtures/sample_folder
 - [0004](./decisions/0004-use-dataclasses-defer-pydantic.md): ファイル情報の保持に dataclasses を採用
 - [0005](./decisions/0005-use-jsonschema.md): 出力 JSON テンプレートの定義・検証に jsonschema を採用
 - [0006](./decisions/0006-schema-field-selection.md): schema.json の項目構成の決定理由
+- [0010](./decisions/0010-adopt-dev-templates.md): 開発環境を作者の dotfiles のひな形の形にそろえる
 
 ## セットアップ手順
 
+[mise](https://mise.jdx.dev/) で Python と uv の版をそろえ、uv で依存を入れる（版は `mise.toml` と `uv.lock` で固定）。
+
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install ruff pytest jsonschema
+mise trust
+mise install
+uv sync
+uv run pre-commit install   # コミットの前に mise run check を動かす
 ```
 
 ## 使い方
@@ -86,7 +90,7 @@ pip install ruff pytest jsonschema
 ターミナルから：
 
 ```bash
-python -m json_schema_mapper <folder>
+uv run python -m json_schema_mapper <folder>
 ```
 
 Python から：
@@ -101,9 +105,8 @@ results = map_folder("fixtures/sample_folder")
 ## テストの実行方法
 
 ```bash
-pip install ruff pytest jsonschema
-ruff check .
-pytest
+mise run check   # ruff check・ruff format --check・pyright・pytest（CI と同じ）
+mise run fix     # ruff の自動修正と format
 ```
 
 ## 今後の展望・既知の制約

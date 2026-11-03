@@ -49,8 +49,7 @@ def _cost_usd(row: dict[str, Any]) -> float:
     """1行（1件・1回）の料金を USD で返す。"""
     output = row["output_tokens"] + row["thoughts_tokens"]
     return (
-        row["prompt_tokens"] * _INPUT_USD_PER_M
-        + output * _OUTPUT_USD_PER_M
+        row["prompt_tokens"] * _INPUT_USD_PER_M + output * _OUTPUT_USD_PER_M
     ) / 1_000_000
 
 
@@ -136,7 +135,9 @@ def _accuracy_table(
 
 def main() -> None:
     """ベンチマーク結果を読み、Markdown の表を出力する。"""
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(
+        description=(__doc__ or "").partition("\n")[0]
+    )
     parser.add_argument("paths", nargs="+", help="benchmark.py の出力")
     args = parser.parse_args()
 

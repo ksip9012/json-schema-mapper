@@ -23,9 +23,7 @@ def test_main_prints_json_array_for_folder(monkeypatch, capsys):
 
 
 def test_main_exits_with_error_for_missing_folder(monkeypatch, capsys):
-    monkeypatch.setattr(
-        "sys.argv", ["json_schema_mapper", "no-such-folder"]
-    )
+    monkeypatch.setattr("sys.argv", ["json_schema_mapper", "no-such-folder"])
 
     with pytest.raises(SystemExit) as exc_info:
         main()

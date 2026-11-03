@@ -25,7 +25,9 @@ _FIXTURES = Path(__file__).resolve().parent.parent / "fixtures/sample_folder"
 
 def main() -> None:
     """各ファイルを runs 回ずつ構造化し、1回ごとに1行を出力する。"""
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(
+        description=(__doc__ or "").partition("\n")[0]
+    )
     parser.add_argument("--runs", type=int, default=100)
     args = parser.parse_args()
 
