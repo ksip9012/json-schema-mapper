@@ -72,6 +72,7 @@ $ python -m json_schema_mapper fixtures/sample_folder
 - [0004](./decisions/0004-use-dataclasses-defer-pydantic.md): ファイル情報の保持に dataclasses を採用
 - [0005](./decisions/0005-use-jsonschema.md): 出力 JSON テンプレートの定義・検証に jsonschema を採用
 - [0006](./decisions/0006-schema-field-selection.md): schema.json の項目構成の決定理由
+- [0010](./decisions/0010-adopt-dev-templates.md): 開発環境を作者の dotfiles のひな形の形にそろえる
 
 ## セットアップ手順
 
