@@ -75,10 +75,13 @@ $ python -m json_schema_mapper fixtures/sample_folder
 
 ## セットアップ手順
 
+[mise](https://mise.jdx.dev/) で Python と uv の版をそろえ、uv で依存を入れる（版は `mise.toml` と `uv.lock` で固定）。
+
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install ruff pytest jsonschema
+mise trust
+mise install
+uv sync
+uv run pre-commit install   # コミットの前に mise run check を動かす
 ```
 
 ## 使い方
@@ -86,7 +89,7 @@ pip install ruff pytest jsonschema
 ターミナルから：
 
 ```bash
-python -m json_schema_mapper <folder>
+uv run python -m json_schema_mapper <folder>
 ```
 
 Python から：
@@ -101,9 +104,8 @@ results = map_folder("fixtures/sample_folder")
 ## テストの実行方法
 
 ```bash
-pip install ruff pytest jsonschema
-ruff check .
-pytest
+mise run check   # ruff check・ruff format --check・pyright・pytest（CI と同じ）
+mise run fix     # ruff の自動修正と format
 ```
 
 ## 今後の展望・既知の制約
