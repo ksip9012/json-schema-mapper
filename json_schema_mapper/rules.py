@@ -12,7 +12,11 @@ _DATE_PATTERNS = [
 _DOCUMENT_EXTENSIONS = {".md", ".txt", ".pdf", ".docx", ".xlsx"}
 _IMAGE_EXTENSIONS = {".jpg", ".png"}
 _ARCHIVE_EXTENSIONS = {".gz"}
+_INNER_EXTENSIONS = {".tar"}
 
+# 英数字だけで、英字を1文字以上含むものを拡張子とみなす
+# （`. Smith notes` や `.2` のような名前の途中のドットを外さないため）
+_EXTENSION_PATTERN = r"\.(?=[A-Za-z0-9]*[A-Za-z])[A-Za-z0-9]+"
 _WORD_SEPARATOR_PATTERN = r"[_\-\s]+"
 _VERSION_SUFFIX_PATTERN = r"_v\d+\b"
 _DUPLICATE_INDEX_PATTERN = r"\((\d+)\)"
@@ -168,6 +172,28 @@ def determine_separator_style(filename: str) -> str:
     return "space"
 
 
+def _strip_extension(filename: str) -> str:
+    """ファイル名から拡張子を取り除く。
+
+    末尾の拡張子を1つだけ取り除き、`archive.tar.gz` の `.tar` のように
+    `_INNER_EXTENSIONS` に含まれるものはあわせて取り除く。名前の途中の
+    ドットは残す（例: `report v1.2.pdf` → `report v1.2`）。
+
+    Args:
+        filename: 判定対象のファイル名。
+
+    Returns:
+        拡張子を取り除いたファイル名。
+    """
+    path = Path(filename)
+    if re.fullmatch(_EXTENSION_PATTERN, path.suffix) is None:
+        return filename
+    stem = path.stem
+    if Path(stem).suffix.lower() in _INNER_EXTENSIONS:
+        stem = Path(stem).stem
+    return stem
+
+
 def normalize_title(filename: str) -> str:
     """拡張子・日付・バージョン表記・連番を取り除いた実質的なタイトルを
     抜き出す。
@@ -184,9 +210,7 @@ def normalize_title(filename: str) -> str:
     Returns:
         実質的なタイトル部分。
     """
-    title = filename
-    while Path(title).suffix:
-        title = Path(title).stem
+    title = _strip_extension(filename)
 
     date_match = _find_date_match(title)
     if date_match is not None:
