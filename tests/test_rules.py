@@ -174,6 +174,12 @@ def test_determine_separator_style(filename, expected):
         ("photo (1).png", "photo"),
         ("draft_v1.md", "draft"),
         ("draft_v10.md", "draft"),
+        ("Mr. Smith notes.txt", "Mr. Smith notes"),
+        ("report v1.2.pdf", "report v1.2"),
+        ("Mr. Smith notes", "Mr. Smith notes"),
+        ("report v1.2", "report v1.2"),
+        ("data.csv", "data"),
+        (".config.json", ".config"),
     ],
 )
 def test_normalize_title(filename, expected):

@@ -20,7 +20,7 @@ from json_schema_mapper.rules import (
 )
 
 _SCHEMA_PATH = Path(__file__).resolve().parent.parent / "schema.json"
-_SCHEMA = json.loads(_SCHEMA_PATH.read_text())
+_SCHEMA = json.loads(_SCHEMA_PATH.read_text(encoding="utf-8"))
 
 
 def map_file(path: str | Path) -> dict[str, Any]:
