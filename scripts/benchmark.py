@@ -14,11 +14,12 @@ import json
 import sys
 import time
 from pathlib import Path
+from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from json_schema_mapper.file_lister import list_files  # noqa: E402
-from json_schema_mapper.mapper import map_file  # noqa: E402
+from json_schema_mapper.file_lister import list_files
+from json_schema_mapper.mapper import map_file
 
 _FIXTURES = Path(__file__).resolve().parent.parent / "fixtures/sample_folder"
 
@@ -36,7 +37,7 @@ def main() -> None:
             start = time.perf_counter()
             result = map_file(_FIXTURES / name)
             latency_ms = (time.perf_counter() - start) * 1000
-            row = {
+            row: dict[str, Any] = {
                 "step": "A1",
                 "model": None,
                 "run": run,

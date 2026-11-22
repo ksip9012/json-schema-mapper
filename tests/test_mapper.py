@@ -26,7 +26,7 @@ FIXTURES_DIR = (
         "draft_v10.md",
     ],
 )
-def test_map_file_validates_against_schema(filename):
+def test_map_file_validates_against_schema(filename: str):
     result = map_file(FIXTURES_DIR / filename)
 
     assert result["file_name"] == filename

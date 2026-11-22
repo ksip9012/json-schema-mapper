@@ -12,6 +12,7 @@
 """
 
 import argparse
+import functools
 import json
 import statistics
 from collections import defaultdict
@@ -60,6 +61,11 @@ def _percentile(values: list[float], q: int) -> float:
     return statistics.quantiles(values, n=100, method="inclusive")[q - 1]
 
 
+def _mean(rows: list[dict[str, Any]], key: str) -> float:
+    """rows の key の値の平均を返す。"""
+    return statistics.mean(r[key] for r in rows)
+
+
 def _summary_table(rows: dict[str, list[dict[str, Any]]]) -> str:
     """step ごとの処理時間・トークン数・料金の表を作る。"""
     lines = [
@@ -78,8 +84,7 @@ def _summary_table(rows: dict[str, list[dict[str, Any]]]) -> str:
         latencies = [r["latency_ms"] for r in step_rows]
         cost = statistics.mean(_cost_usd(r) for r in step_rows)
 
-        def mean(key: str) -> float:
-            return statistics.mean(r[key] for r in step_rows)
+        mean = functools.partial(_mean, step_rows)
 
         lines.append(
             f"| {step} | {step_rows[0]['model'] or '-'} | {files}件 "

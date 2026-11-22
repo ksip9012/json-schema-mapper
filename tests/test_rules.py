@@ -29,7 +29,7 @@ from json_schema_mapper.rules import (
         ("draft_v10.md", None),
     ],
 )
-def test_extract_date(filename, expected):
+def test_extract_date(filename: str, expected: str | None):
     assert extract_date(filename) == expected
 
 
@@ -50,7 +50,7 @@ def test_extract_date(filename, expected):
         ("draft_v10.md", "document"),
     ],
 )
-def test_categorize(filename, expected):
+def test_categorize(filename: str, expected: str):
     assert categorize(filename) == expected
 
 
@@ -71,7 +71,7 @@ def test_categorize(filename, expected):
         ("draft_v10.md", False),
     ],
 )
-def test_is_hidden(filename, expected):
+def test_is_hidden(filename: str, expected: bool):
     assert is_hidden(filename) == expected
 
 
@@ -92,7 +92,7 @@ def test_is_hidden(filename, expected):
         ("draft_v10.md", 2),
     ],
 )
-def test_count_words(filename, expected):
+def test_count_words(filename: str, expected: int):
     assert count_words(filename) == expected
 
 
@@ -113,7 +113,7 @@ def test_count_words(filename, expected):
         ("draft_v10.md", True),
     ],
 )
-def test_has_version_suffix(filename, expected):
+def test_has_version_suffix(filename: str, expected: bool):
     assert has_version_suffix(filename) == expected
 
 
@@ -134,7 +134,7 @@ def test_has_version_suffix(filename, expected):
         ("draft_v10.md", None),
     ],
 )
-def test_extract_duplicate_index(filename, expected):
+def test_extract_duplicate_index(filename: str, expected: int | None):
     assert extract_duplicate_index(filename) == expected
 
 
@@ -155,7 +155,7 @@ def test_extract_duplicate_index(filename, expected):
         ("draft_v10.md", "underscore"),
     ],
 )
-def test_determine_separator_style(filename, expected):
+def test_determine_separator_style(filename: str, expected: str):
     assert determine_separator_style(filename) == expected
 
 
@@ -182,5 +182,5 @@ def test_determine_separator_style(filename, expected):
         (".config.json", ".config"),
     ],
 )
-def test_normalize_title(filename, expected):
+def test_normalize_title(filename: str, expected: str):
     assert normalize_title(filename) == expected
